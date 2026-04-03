@@ -1,14 +1,12 @@
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 public class FileOrganizerGUI extends JFrame {
 
@@ -271,7 +269,7 @@ public class FileOrganizerGUI extends JFrame {
         if (files == null) return;
         fileCountLabel.setText(files.length + " file" + (files.length != 1 ? "s" : "") + " found");
         Arrays.fill(statCounts, 0);
-        String[] cats = CATEGORIES.keySet().toArray(new String[0]);
+        String[] cats = CATEGORIES.keySet().toArray(new String[CATEGORIES.size()]);
         for (File f : files) {
             String ext = getExt(f.getName());
             boolean matched = false;
@@ -308,7 +306,7 @@ public class FileOrganizerGUI extends JFrame {
                 }
 
                 int total = files.length, done = 0, moved = 0, skipped = 0;
-                String[] cats = CATEGORIES.keySet().toArray(new String[0]);
+                String[] cats = CATEGORIES.keySet().toArray(new String[CATEGORIES.size()]);
                 String ts = new SimpleDateFormat("HH:mm:ss").format(new Date());
 
                 swingRun(() -> {
@@ -331,10 +329,9 @@ public class FileOrganizerGUI extends JFrame {
                     final String catFinal = cat;
                     String logLine;
                     Color  logColor;
-                    boolean ok = false;
                     try {
                         Files.move(f.toPath(), dest.toPath(), StandardCopyOption.ATOMIC_MOVE);
-                        ok = true; moved++;
+                        moved++;
                         logLine  = "  ✓  " + f.getName() + "  →  " + fold + "/";
                         logColor = SUCCESS;
                         // bump stat
@@ -350,7 +347,7 @@ public class FileOrganizerGUI extends JFrame {
 
                     done++;
                     final int pct = (int)((done / (double)total) * 100);
-                    final int doneF = done, movedF = moved;
+                    final int doneF = done;
                     final int[] sc = statCounts.clone();
                     swingRun(() -> {
                         log(finalLogLine, finalLogColor);
@@ -370,7 +367,7 @@ public class FileOrganizerGUI extends JFrame {
                     setStatus("✔  " + mv + " files organized successfully!", SUCCESS);
                     fileCountLabel.setText(mv + " files moved");
                 });
-            } catch (Exception ex) {
+            } catch (InterruptedException ex) {
                 swingRun(() -> { log("ERROR: " + ex.getMessage(), DANGER); setStatus("Error occurred.", DANGER); });
             } finally {
                 swingRun(() -> { organizeBtn.setEnabled(true); browseBtn.setEnabled(true); });
@@ -412,6 +409,7 @@ public class FileOrganizerGUI extends JFrame {
         return candidate;
     }
 
+    @SuppressWarnings("unused")
     private void log(String msg, Color c) {
         // SimpleAttributeSet won't work with plain JTextArea, use append + color via HTML trick
         // We store as plain text; color hints via prefix characters only.
@@ -443,8 +441,8 @@ public class FileOrganizerGUI extends JFrame {
         tf.setText(placeholder);
         tf.setForeground(TEXT_DIM);
         tf.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) { if (tf.getText().equals(placeholder)) { tf.setText(""); tf.setForeground(TEXT); } }
-            public void focusLost(FocusEvent e)   { if (tf.getText().isEmpty()) { tf.setText(placeholder); tf.setForeground(TEXT_DIM); } }
+            @Override public void focusGained(FocusEvent e) { if (tf.getText().equals(placeholder)) { tf.setText(""); tf.setForeground(TEXT); } }
+            @Override public void focusLost(FocusEvent e)   { if (tf.getText().isEmpty()) { tf.setText(placeholder); tf.setForeground(TEXT_DIM); } }
         });
     }
 
@@ -507,7 +505,7 @@ public class FileOrganizerGUI extends JFrame {
     // ══════════════════════════════════════════════════════════════════════
     public static void main(String[] args) {
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
-        catch (Exception ignored) {}
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ignored) {}
         SwingUtilities.invokeLater(FileOrganizerGUI::new);
     }
 }
