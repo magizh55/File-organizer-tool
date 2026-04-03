@@ -1,12 +1,12 @@
 # 📁 File Organizer Tool (Java)
 
-## 📌 Overview
+## Overview
 
 The File Organizer Tool is a Java-based application that automatically organizes files in a selected directory into categorized folders based on their file types. This helps in maintaining a clean and structured file system.
 
 ---
 
-## 🎯 Features
+## Features
 
 * Automatically scans a folder
 * Sorts files into categories (Images, Documents, Videos, Audio, Archives, Others)
@@ -14,18 +14,14 @@ The File Organizer Tool is a Java-based application that automatically organizes
 * Moves files safely using Java file handling
 * Simple command-line interface
 
----
-
-## 🛠️ Technologies Used
+## Technologies Used
 
 * Java
 * File Handling (`java.io.File`)
 * NIO Package (`java.nio.file.Files`)
 * Collections (`HashMap`)
 
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 FileOrganizer/
@@ -34,9 +30,8 @@ FileOrganizer/
 └── README.md
 ```
 
----
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Compile the program
 
@@ -60,7 +55,7 @@ C:\Users\YourName\Downloads
 
 ---
 
-## 📊 Example
+## Example
 
 ### Before:
 
@@ -84,7 +79,7 @@ Videos/
 
 ---
 
-## 💡 Future Improvements
+## Future Improvements
 
 * Add duplicate file renaming
 * Add GUI interface (Java Swing)
